@@ -1,0 +1,120 @@
+
+//Circle.javascript tests if the user draws a circle using their mouse while pressing
+
+var startMousePos :Vector2;
+var mostRecentMousePos :Vector2;
+var currentStage :int;
+var stageArray :int[];
+var currentIndex :int;
+var circleOffByPixelsAllowed :int;
+
+Start()
+{
+    mostRecentMousePos = null;
+    currentStage = -1;
+    stageArray = new int[5];
+    currentIndex = -1;
+}
+
+Update()
+{
+
+if(Input.GetMouseButtonDown(0))
+{
+    startMousePos = Input.mousePosition;
+}
+if(Input.GetMouseButton(0))
+{
+    /////////////////////////////Circle Checking Code//////////////////////////////////////////
+    if(mostRecentMousePos != null) //Runs comparison between mousePos and last mousePos
+    {
+        var xVar = Input.mousePosition.x - mostRecentMousePos.x;
+        var yVar = Input.mousePosition.y - mostRecentMousePos.y;
+        if((xVar < 0 && yVar > 0))// || (xVar > 0 && yVar < 0))
+            //cc(-,+)   c(+,-)
+          //Quadrent 1 represented by a 0
+        {
+            if(currentStage != 0 && currentIndex + 1 < stageArray.length)
+            {
+                currentIndex++;
+                stageArray[currentIndex]=0;
+            }
+        }
+        else if((xVar < 0 && yVar < 0))// || (xVar > 0 && yVar > 0))
+            //cc(-,-)   c(+,+)
+          //Quadrent 2 represented by a 1
+        {
+            if(currentStage != 0 && currentIndex + 1 < stageArray.length)
+            {
+                currentIndex++;
+                stageArray[currentIndex]=1;
+            }
+        }
+        else if((xVar > 0 && yVar < 0))// || (xVar < 0 && yVar > 0))
+            //cc(+,-)   c(-,+)
+          //Quadrent 3 represented by a 2
+        {
+            if(currentStage != 0 && currentIndex + 1 < stageArray.length)
+            {
+                currentIndex++;
+                stageArray[currentIndex]=2;
+            }
+        }
+        else if((xVar > 0 && yVar > 0))// || (xVar < 0 && yVar < 0))
+            //cc(+,+)   c(-,-)
+          //Quadrent 4 represented by a 3
+        {
+            if(currentStage != 0 && currentIndex + 1 < stageArray.length)
+            {
+                currentIndex++;
+                stageArray[currentIndex]=3;
+            }
+        }
+    }
+    mostRecentMousePos = Input.mousePosition;//sets for next while mouseis held down cycle
+    /////////////////////////////End Circle Checking Code//////////////////////////////////////////
+}
+if(Input.GetMouseButtonUp(0))
+{
+    /////////////////////////////Circle Checking Code//////////////////////////////////////////
+    //Initializing local variables for circle-check while loop
+    var circleLeft :boolean = true;
+    var looper :int = 0;
+    var difference :int = stageArray[0];
+    
+    var circleRight :boolean = true;
+    var dlooper :int = 3;
+    var adderr :int = 3-stageArray[0];
+    
+    while(looper < stageArray.length) //loops through 5 times to check if circle
+    {
+        if((stageArray[looper]-difference+4)%4 != looper) //checks if following order for Counter-clockwise circle
+        {
+            circleLeft = false;
+            looper = (looper+1)%4; //adds one to looper (0,1,2,3):||
+        }
+        if((stageArray[looper]+adderr)%4 != dlooper) //checks if following order for Clockwise circle
+        {
+            circleRight = false;
+            dlooper = (dlooper+3)%4; //subtracts one from dlooper (3,2,1,0):||
+            looper = (looper+1)%4; //adds one to looper (0,1,2,3):||
+        }
+    }
+    //checks if mouseDownPos and mouseUpPos are close to each other/connecting(so to speak)
+    if(Vector2.Distance(Input.mousePosition,startMousePos) < circleOffByPixelsAllowed)
+    {
+        if(circleLeft)
+        {
+            //rotate left code
+        }
+        if(circleRight)
+        {
+            //rotate right code
+        }
+    }
+    
+    mostRecentMousePos = null;//sets for next circle
+    /////////////////////////////End Circle Checking Code//////////////////////////////////////////
+}
+
+}//End of update
